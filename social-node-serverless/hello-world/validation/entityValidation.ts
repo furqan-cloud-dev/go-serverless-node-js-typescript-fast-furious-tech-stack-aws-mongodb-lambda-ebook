@@ -1,5 +1,5 @@
 // Entity Validation
-import { make } from "simple-body-validator";
+import { InitialRules, make } from "simple-body-validator";
 import { userValidationRules } from "./validationRules.js";
 
 
@@ -12,7 +12,7 @@ export function entityValidation(entity: string, bodyJson: object): { validated:
 }
 
 
-function validateRules(bodyJson: object, rules: any): { validated: boolean, error: object }  {
+function validateRules(bodyJson: object, rules: InitialRules): { validated: boolean, error: object }  {
   const validator = make(bodyJson, rules);
   if (! validator.validate()) {
     return { validated: false, error: validator.errors().all() };
