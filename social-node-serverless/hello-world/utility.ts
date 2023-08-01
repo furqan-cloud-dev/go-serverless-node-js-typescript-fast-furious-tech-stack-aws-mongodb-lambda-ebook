@@ -13,6 +13,19 @@ export function sendErrorResponse(statusCode: number, message: string): APIGatew
   };
 }
 
+
+export function badRequest(error: object): APIGatewayProxyResult {
+  return {
+    statusCode: 400,
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      error: error,
+    }),
+  };
+}
+
 // Unix timestamp (in seconds):
 function getUnixTimeStamp() {
   return Math.round(+new Date() / 1000);

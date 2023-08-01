@@ -25,8 +25,8 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 import { Db, MongoClient } from "mongodb";
 import { ObjectId } from "mongodb";
 import { find, findOne, insert, updateOne, deleteOne } from "./crud.js";
-import { sendErrorResponse, appendTimeStampForNewDoc, updateTimeStampForExistingDoc } from "./utility.js";
-
+import { sendErrorResponse, badRequest, appendTimeStampForNewDoc, updateTimeStampForExistingDoc } from "./utility.js";
+import { entityValidation } from "./validation/entityValidation.js";
 
 let mongoClient: MongoClient = null;
 let db: Db = null;
@@ -98,8 +98,11 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
         result = await find(db, entity || "", filter, sort, page, limit, fields);
       }
       else if (httpMethod === "post") {
-        const jsonParameters = JSON.parse(event.body || "{}");
-        const doc = appendTimeStampForNewDoc(jsonParameters);
+        const jsonBodyParameters = JSON.parse(event.body || "{}");
+        const { validated, error } = entityValidation(entity, jsonBodyParameters);
+        if (!validated) return badRequest(error);
+
+        const doc = appendTimeStampForNewDoc(jsonBodyParameters);
         result = await insert(db, entity, doc);
       }
     }
