@@ -1,14 +1,22 @@
 /*
   - eBook Example Project:
-  - Go Serverless Fast & Furious- A Cost Effective TechStack: Node.js + AWS Cloud
+  - "Go Serverless Fast & Furious- A Cost Effective TechStack: Node.js + AWS Cloud"
+
+  - - Node.js + Typescript
+  - - AWS Serverless: Lambda + APIGateway
   - - AWS SAM Template Project
   - - Backend Integration: MongoDB
   - - Dynamic e-Route for CRUD Operations
+  - - JWT (JSON Web Token) Authorization
 
   -- - - -- CREATED BY- -- -- 
   Muhammad Furqan
   Email: furqan.cloud.dev@gmail.com
   Linkedin: https://www.linkedin.com/in/muhammad-furqan-121b691a
+
+  -- - - -- SPONSERED BY- -- -- 
+  Fast & Furious Functional Programming Style
+  All Developer Community World Wide
  
  */
 
@@ -16,21 +24,33 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { Db, MongoClient } from 'mongodb';
 import { ObjectId } from 'mongodb';
 import { find, findOne, insert, updateOne, deleteOne } from "./crud.js";
-import { sendErrorResponse, appendDateForNewDoc } from "./utility.js";
+import { sendErrorResponse, appendTimeStampForNewDoc, updateTimeStampForExistingDoc } from "./utility.js";
 
 
 let mongoClient: MongoClient = null;
 let db: Db = null;
+
+//Mapped Entities
+const entities = ["users", "notifications"];
 
 export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
     if (event.path === undefined) {
         return sendErrorResponse(404, "node.js rest api - expecting an APIGatewayEvent Request");
     }
 
-
     const [emp, api, eRoute, entity, entityId] = event.path.split("/");
+    if ([emp, api, eRoute].join("/") !== "/api/e") {
+        // Some other route - Not an e-Route
+        return sendErrorResponse(404, "not found");
+    }
+
     if (entity === undefined || entity.trim().length === 0) {
-        return sendErrorResponse(404, "not found - invalid e-route - entity missing");
+        return sendErrorResponse(404, "not found - invalid e-route, entity missing");
+    }
+
+    if (!entities.includes(entity)) {
+        // only allow mapped entities to process the request - avoid any random entity
+        return sendErrorResponse(404, "not found - entity is not mapped");
     }
 
     const httpMethod = event.httpMethod.toLowerCase();
@@ -60,8 +80,9 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
                 }
                 else if (httpMethod === "put") {
                     const jsonParameters = JSON.parse(event.body || "{}");
+                    const doc = updateTimeStampForExistingDoc(jsonParameters);
                     const updateDoc = {
-                        $set: jsonParameters
+                        $set: doc
                     };
                     const options = { upsert: false };
                     result = await updateOne(db, entity, query, updateDoc, options);
@@ -77,7 +98,7 @@ export const lambdaHandler = async (event: APIGatewayProxyEvent): Promise<APIGat
             }
             else if (httpMethod === "post") {
                 const jsonParameters = JSON.parse(event.body || "{}");
-                const doc = appendDateForNewDoc(jsonParameters);
+                const doc = appendTimeStampForNewDoc(jsonParameters);
                 result = await insert(db, entity, doc);
             }
         }

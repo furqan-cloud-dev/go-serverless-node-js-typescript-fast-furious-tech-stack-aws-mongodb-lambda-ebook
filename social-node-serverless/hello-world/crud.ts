@@ -6,6 +6,8 @@ type projectionFields = {
 
 export async function find(db: Db, collectionName: string, query: any, sort: any, page = 1, limit = 10, fields: string[]) {
     const collection = db.collection(collectionName);
+    const totalDocs = await collection.countDocuments(query);
+    const totalPages = Math.ceil(totalDocs / limit);
     const startFrom = (page - 1) * limit;
     const projection: projectionFields = {};
     fields.forEach((element) => {
@@ -20,8 +22,10 @@ export async function find(db: Db, collectionName: string, query: any, sort: any
         .toArray();
 
     return {
-        "limit": limit,
+        "totalItems": totalDocs,
+        "totalPages": totalPages,
         "currentPage": page,
+        "limit": limit,
         "results": results
     };
 }

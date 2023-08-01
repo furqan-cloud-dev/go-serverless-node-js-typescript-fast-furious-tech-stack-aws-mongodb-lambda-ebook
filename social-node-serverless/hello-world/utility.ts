@@ -23,11 +23,21 @@ function getCurrentISODate() {
     return today;
 }
 
-export function appendDateForNewDoc(jsonParameters: any) {
+// For New docs
+export function appendTimeStampForNewDoc(jsonParameters: any) {
     const doc = {
         ...jsonParameters,
         createdAt: getUnixTimeStamp(),
-        createdAtISODate: getCurrentISODate(),
+        updatedAt: getUnixTimeStamp(),
+    };
+    return doc;
+}
+
+// For Updated docs
+export function updateTimeStampForExistingDoc(jsonParameters: any) {
+    const doc = {
+        ...jsonParameters,
+        updatedAt: getUnixTimeStamp(),
     };
     return doc;
 }
