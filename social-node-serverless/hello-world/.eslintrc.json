@@ -1,0 +1,43 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint",
+    "no-loops"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest", // Allows for the parsing of modern ECMAScript features
+    "sourceType": "module"
+  },
+  "rules": {
+    "quotes": [
+      "error",
+      "double"
+    ],
+    "semi": [
+      2,
+      "always"
+    ],
+    "semi-spacing": [
+      "error",
+      {
+        "before": false,
+        "after": true
+      }
+    ],
+    "indent": [
+      "error",
+      2
+    ],
+    "camelcase": [
+      "error",
+      {
+        "properties": "always"
+      }
+    ]
+  }
+}

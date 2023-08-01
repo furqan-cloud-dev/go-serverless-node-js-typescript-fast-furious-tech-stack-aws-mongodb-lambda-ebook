@@ -41,7 +41,7 @@ Resources:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
-        Target: "es2020"
+        Target: "es2022"
         Sourcemap: true
         EntryPoints: 
         - app.ts
