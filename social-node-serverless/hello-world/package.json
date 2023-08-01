@@ -4,9 +4,8 @@
   "description": "social sample app for NodeJS + MongoDB",
   "main": "app.js",
   "type": "module",
-  "repository": "https://github.com/awslabs/aws-sam-cli/tree/develop/samcli/local/init/templates/cookiecutter-aws-sam-hello-nodejs",
-  "author": "SAM CLI",
-  "license": "MIT",
+  "author": "Furqan",
+  "license": "GPL",
   "scripts": {
     "unit": "jest",
     "lint": "eslint '*.ts' --quiet --fix",
@@ -14,7 +13,8 @@
     "test": "npm run compile && npm run unit"
   },
   "dependencies": {
-    "esbuild": "^0.14.54"
+    "esbuild": "^0.14.54",
+    "mongodb": "^5.7.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.119",

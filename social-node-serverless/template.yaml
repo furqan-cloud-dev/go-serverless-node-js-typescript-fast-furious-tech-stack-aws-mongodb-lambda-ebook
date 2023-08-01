@@ -8,7 +8,16 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 30
+
+
+Parameters:
+
+  MongoDBConnectionString:
+    Type: String
+    Description: Connect To MongoDB Instance
+    Default: 'default value'
+
 
 Resources:
   HelloWorldFunction:
@@ -19,12 +28,15 @@ Resources:
       Runtime: nodejs18.x
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          MONGODB_CONNECTION_STRING: !Ref MongoDBConnectionString  
       Events:
         HelloWorld:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /hello
-            Method: get
+            Path: /api/{proxy+}
+            Method: any
     Metadata: # Manage esbuild properties
       BuildMethod: esbuild
       BuildProperties:
