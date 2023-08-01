@@ -39,8 +39,12 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
+node_modules
 jspm_packages/
+
+# SAM Configuration
+*.toml
+
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
